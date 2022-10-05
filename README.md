@@ -1,2 +1,2 @@
-# OOPJ
-A repo for Object Oriented Programming in Java
+# DS
+Repo for DS.
