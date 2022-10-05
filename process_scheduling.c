@@ -13,42 +13,39 @@ struct Scheduling
 int n;
 struct Scheduling fcfs, sjf;
 
-void Sort(struct Scheduling *sjf, int n) 
+void Sort(struct Scheduling *obj, int n) 
 {
   for (int i = 0; i < n - 1; i++) 
   {
     for (int j = 0; j < n - i - 1; j++) 
 	{
-      if (sjf -> bt[j] > sjf -> bt[j + 1]) 
+      if (obj -> bt[j] > obj -> bt[j + 1]) 
 	  {
-        int temp = sjf -> bt[j];
-        sjf -> bt[j] = sjf -> bt[j + 1];
-        sjf -> bt[j + 1] = temp;
+        int temp = obj -> bt[j];
+        obj -> bt[j] = obj -> bt[j + 1];
+        obj -> bt[j + 1] = temp;
 
-		temp = sjf -> temp_index[j];
-		sjf -> temp_index[j] = sjf -> temp_index[j + 1];
-		sjf -> temp_index[j + 1] = temp;
+		temp = obj -> temp_index[j];
+		obj -> temp_index[j] = obj -> temp_index[j + 1];
+		obj -> temp_index[j + 1] = temp;
       }
     }
   }
 }
 
-void fcfs_operation(struct Scheduling *obj, int n)
+void fcfs_function(struct Scheduling *obj, int n)
 {
 	obj -> temp[0] = 0;
 	for(int i=0; i<n; i++)
 	{
 		obj -> temp[i+1] = obj -> temp[i] + obj -> bt[i];
 	}
-	printf("%f\n",obj -> avg_wt);
 
 	for(int i=0; i<=n; i++)
 	{
 		if(i>=0 && i<n)
 		{
 			obj -> wt[i] = obj -> temp[i];
-			// obj -> avg_wt = obj -> avg_wt + obj -> wt[i];
-			// printf("%f\n",obj -> wt[i]);
 		}
 		if(i>0 && i<=n)
 		{
@@ -56,16 +53,28 @@ void fcfs_operation(struct Scheduling *obj, int n)
 			obj -> avg_wt += obj -> tat[i-1];
 		}
 	}
-	// printf("%f\n",obj -> avg_wt);
-	// obj -> avg_wt /= n;
-	// obj -> avg_tat /= n;
+}
 
-	// printf("\n Average Waiting Time: %d", obj -> avg_wt);
-	// printf("\n Average Turn Around Time: %d", obj -> avg_tat);
+void average_wt_tat(struct Scheduling *obj, int n)
+{
+	obj -> avg_wt = 0.0;
+	obj -> avg_tat = 0.0;
+	for(int i=0; i<=n; i++)
+	{
+		if(i>=0 && i<n)
+			obj -> avg_wt = obj -> avg_wt + obj -> wt[i];
+		if(i>0 && i<=n)
+			obj -> avg_tat = obj -> avg_tat + obj -> tat[i];
+	}
+	obj -> avg_wt /= n;
+	obj -> avg_tat /= n;
+	printf("\n\nAverage Waiting Time: %f", obj -> avg_wt);
+	printf("\nAverage Turn Around Time: %f", obj -> avg_tat);
 }
 
 void gantt_chart(struct Scheduling obj)
 {
+	printf("\n\nGANT CHART\n");
 	for(int i=0; i<n; i++)
 	{
 		printf("%d P%d ",obj.temp[i], obj.temp_index[i]);
@@ -91,12 +100,27 @@ void input(struct Scheduling *fcfs, struct Scheduling *sjf, int *n)
 	fcfs -> avg_tat = 0;
 }
 
+void fcfs_operation(struct Scheduling *obj, int n)
+{
+	fcfs_function(obj, n);
+	printf("\n\n-----FCFS-----\n");
+	gantt_chart(*obj);
+	average_wt_tat(obj, n);
+}
+
+void sjf_operation(struct Scheduling *obj, int n)
+{
+	Sort(obj, n);
+	fcfs_function(obj, n);
+	printf("\n\n-----SJF-----\n");
+	gantt_chart(*obj);
+	average_wt_tat(obj, n);
+}
+
 int main()
 {
+
 	input(&fcfs, &sjf, &n);
 	fcfs_operation(&fcfs, n);
-	gantt_chart(fcfs);
-	// Sort(&sjf, n);
-	// fcfs_operation(&sjf, n);
-	// gantt_chart(sjf);
+	sjf_operation(&sjf, n);
 }
