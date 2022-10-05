@@ -1,3 +1,2 @@
-# KTU CSE Labs
-
-### A repo for all cse lab programs.
+# OOPJ
+A repo for Object Oriented Programming in Java
