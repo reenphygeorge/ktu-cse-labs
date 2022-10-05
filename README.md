@@ -1,2 +1,2 @@
-# DS
-Repo for DS.
+## C-Programming
+Repo for basic C Programs.
